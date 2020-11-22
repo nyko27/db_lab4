@@ -183,42 +183,42 @@ public class View {
     }
 
     private void createAirline() throws SQLException {
-        System.out.println("\nCREATing Airline...");
+        System.out.println("\nAdd new Airline...");
         Airline airline = getAirlineValues();
         airlineController.create(airline);
         System.out.println("added an airline\n");
     }
 
     private void createAirport() throws SQLException {
-        System.out.println("\nCREATing Airline...");
+        System.out.println("\nAdd new airport...");
         Airport airport = getAirportValues();
         airportController.create(airport);
         System.out.println("added an airport\n");
     }
 
     private void createFlight() throws SQLException {
-        System.out.println("\nCREATing Flight...");
+        System.out.println("\nAdd new Flight...");
         Flight flight = getFlightValues();
         flightController.create(flight);
         System.out.println("added new flight\n");
     }
 
     private void createTicket() throws SQLException {
-        System.out.println("\nCREATing Airline...");
+        System.out.println("\nAdd new ticket...");
         Ticket ticket = getTicketValues();
         ticketController.create(ticket);
         System.out.println("added new ticket\n");
     }
 
     private void createUserProfile() throws SQLException {
-        System.out.println("\nCREATing Airline...");
+        System.out.println("\nAdd new user...");
         UserProfile userProfile = getUserProfileValues();
         userProfileController.create(userProfile);
         System.out.println("added an userProfile\n");
     }
 
     private void createUserProfileHasTicket() throws SQLException {
-        System.out.println("\nCREATing Airline...");
+        System.out.println("\nAdd new user-ticket link...");
         UserProfileHasTicket userProfileHasTicket = getUserProfileTicketValues();
         userProfileHasTicketController.create(userProfileHasTicket);
         System.out.println("added user with ticket\n");
@@ -240,7 +240,7 @@ public class View {
         Flight flight = getFlightValues();
 
 
-        flightController.update(id, flight );
+        flightController.update(id, flight);
         System.out.println("Updated \n");
     }
 
@@ -333,14 +333,17 @@ public class View {
     }
 
     public final void view() {
+        System.out.println("\nInput method key to deal with db:");
         String input;
-        System.out.println("\nDo smth:\n");
         do {
             try {
                 input = scanner.next();
                 menu.get(input).print();
-            } catch (Exception ignored) {
-                }
+                System.out.println("\nInput method key to deal with db:");
+            } catch (Exception e) {
+                System.out.println("No operation for this key");
+                System.out.println("\nInput method key to deal with db:");
+            }
         } while (scanner.hasNext());
     }
 

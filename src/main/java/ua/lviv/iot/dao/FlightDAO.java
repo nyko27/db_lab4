@@ -85,13 +85,15 @@ public  class FlightDAO implements GeneralDAO<Flight> {
 
     @Override
     public void update(Integer id, Flight newFlight) throws SQLException {
-        try (PreparedStatement ps = DbConnector.getConnection().prepareStatement(UPDATE)) {
-            ps.setInt(1, id);
-            ps.setString(2, newFlight.getAirplaneName());
-            ps.setInt(3, newFlight.getAllowedBaggageInKilograms());
-            ps.setInt(4, newFlight.getDepartureAirportId());
-            ps.setInt(5, newFlight.getArrivalAirportId());
-            ps.setInt(6, newFlight.getAirlineId());
+        try (PreparedStatement ps = DbConnector.getConnection().prepareStatement("UPDATE sky_scanner.flight"
+                + " SET airplane_name=?, allowed_baggage_in_kilogrms=?, departure_airport_id=?, arrival_airport_id=?,  " +
+                "airline_id=? WHERE id=?")) {
+            ps.setInt(6, id);
+            ps.setString(1, newFlight.getAirplaneName());
+            ps.setInt(2, newFlight.getAllowedBaggageInKilograms());
+            ps.setInt(3, newFlight.getDepartureAirportId());
+            ps.setInt(4, newFlight.getArrivalAirportId());
+            ps.setInt(5, newFlight.getAirlineId());
 
             ps.executeUpdate();
             System.out.println(ps);
