@@ -26,8 +26,8 @@ public class AirlineController implements GeneralController<Airline> {
     }
 
     @Override
-    public void update(Integer id, Airline airline) throws SQLException {
-        airlineDAO.update(id, airline);
+    public void update(Airline airline) throws SQLException {
+        airlineDAO.update(airline);
     }
 
     @Override

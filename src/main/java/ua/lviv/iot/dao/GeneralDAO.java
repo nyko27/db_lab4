@@ -3,7 +3,7 @@ package ua.lviv.iot.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface GeneralDAO <T>{
+public interface GeneralDAO<T> {
 
     List<T> findAll() throws SQLException;
 
@@ -11,7 +11,7 @@ public interface GeneralDAO <T>{
 
     void create(T object) throws SQLException;
 
-    void update(Integer id, T object) throws SQLException;
+    void update(T object) throws SQLException;
 
     void delete(Integer id) throws SQLException;
 
