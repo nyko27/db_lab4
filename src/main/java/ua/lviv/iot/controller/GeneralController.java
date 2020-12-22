@@ -5,13 +5,13 @@ import java.util.List;
 
 public interface GeneralController<T> {
 
-    List<T> findAll() throws SQLException ;
+    List<T> findAll() throws SQLException;
 
     T findById(Integer id) throws SQLException;
 
     void create(T object) throws SQLException;
 
-    void update(Integer id, T object) throws SQLException;
+    void update( T object) throws SQLException;
 
     void delete(Integer id) throws SQLException;
 

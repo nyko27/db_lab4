@@ -6,7 +6,7 @@ import ua.lviv.iot.model.Ticket;
 import java.sql.SQLException;
 import java.util.List;
 
-public class TicketController implements GeneralController<Ticket>{
+public class TicketController implements GeneralController<Ticket> {
 
     TicketDAO ticketDAO = new TicketDAO();
 
@@ -26,8 +26,8 @@ public class TicketController implements GeneralController<Ticket>{
     }
 
     @Override
-    public void update(Integer id, Ticket ticket) throws SQLException {
-        ticketDAO.update(id, ticket);
+    public void update(Ticket ticket) throws SQLException {
+        ticketDAO.update(ticket);
     }
 
     @Override

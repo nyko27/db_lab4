@@ -1,7 +1,13 @@
 package ua.lviv.iot.view;
 
-import ua.lviv.iot.controller.*;
-import ua.lviv.iot.model.*;
+import ua.lviv.iot.controller.AirlineController;
+import ua.lviv.iot.controller.AirportController;
+import ua.lviv.iot.controller.FlightController;
+import ua.lviv.iot.controller.TicketController;
+import ua.lviv.iot.model.Airline;
+import ua.lviv.iot.model.Airport;
+import ua.lviv.iot.model.Flight;
+import ua.lviv.iot.model.Ticket;
 
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
@@ -17,8 +23,6 @@ public class View {
     private final AirportController airportController = new AirportController();
     private final FlightController flightController = new FlightController();
     private final TicketController ticketController = new TicketController();
-    private final UserProfileController userProfileController = new UserProfileController();
-    private final UserProfileHasTicketController userProfileHasTicketController = new UserProfileHasTicketController();
 
     public View() {
 
@@ -46,18 +50,6 @@ public class View {
         menu.put("44", this::updateTicket);
         menu.put("45", this::deleteTicket);
 
-        menu.put("51", this::getAllUserProfiles);
-        menu.put("52", this::getUserProfileById);
-        menu.put("53", this::createUserProfile);
-        menu.put("54", this::updateUserProfile);
-        menu.put("55", this::deleteUserProfile);
-
-        menu.put("61", this::getAllUserUserProfileHasTickets);
-        menu.put("62", this::getUserProfileHasTicketById);
-        menu.put("63", this::createUserProfileHasTicket);
-        menu.put("64", this::updateUserProfileHasTicket);
-        menu.put("65", this::deleteUserProfileHasTicket);
-
     }
 
     private void getAllAirlines() throws SQLException {
@@ -80,15 +72,6 @@ public class View {
         System.out.println(ticketController.findAll() + "\n");
     }
 
-    private void getAllUserProfiles() throws SQLException {
-        System.out.println("\nAll User Profiles: ");
-        System.out.println(userProfileController.findAll() + "\n");
-    }
-
-    private void getAllUserUserProfileHasTickets() throws SQLException {
-        System.out.println("\nAll info about user's tickets: ");
-        System.out.println(userProfileHasTicketController.findAll() + "\n");
-    }
 
     private void getAirlineById() throws SQLException {
         System.out.println("\nEnter id to find airline with this id ...: ");
@@ -114,17 +97,6 @@ public class View {
         System.out.println(ticketController.findById(id) + "\n");
     }
 
-    private void getUserProfileById() throws SQLException {
-        System.out.println("\nEnter id to find user with this id ...: ");
-        Integer id = scanner.nextInt();
-        System.out.println(userProfileController.findById(id) + "\n");
-    }
-
-    private void getUserProfileHasTicketById() throws SQLException {
-        System.out.println("\nEnter id to find user and ticket with this id ...: ");
-        Integer id = scanner.nextInt();
-        System.out.println(userProfileHasTicketController.findById(id) + "\n");
-    }
 
     private Airline getAirlineValues() throws SQLException {
         System.out.println("Input airline name: ");
@@ -141,7 +113,7 @@ public class View {
         String city = scanner.next();
         System.out.println("Input country name: ");
         String country = scanner.next();
-        return new Airport(airLineId, airportName, city, country);
+        return new Airport(airLineId = airLineId, airportName, city, country);
     }
 
     private Flight getFlightValues() throws SQLException {
@@ -166,21 +138,6 @@ public class View {
         return new Ticket(flightId, priceInUah);
     }
 
-    private UserProfile getUserProfileValues() throws SQLException {
-        System.out.println("Input user name: ");
-        String userName = scanner.next();
-        System.out.println("Input surName: ");
-        String surName = scanner.next();
-        return new UserProfile(userName, surName);
-    }
-
-    private UserProfileHasTicket getUserProfileTicketValues() throws SQLException {
-        System.out.println("Input ticket id: ");
-        Integer ticketId = scanner.nextInt();
-        System.out.println("Input user id: ");
-        Integer userProfileId = scanner.nextInt();
-        return new UserProfileHasTicket(ticketId, userProfileId);
-    }
 
     private void createAirline() throws SQLException {
         System.out.println("\nAdd new Airline...");
@@ -210,27 +167,13 @@ public class View {
         System.out.println("added new ticket\n");
     }
 
-    private void createUserProfile() throws SQLException {
-        System.out.println("\nAdd new user...");
-        UserProfile userProfile = getUserProfileValues();
-        userProfileController.create(userProfile);
-        System.out.println("added an userProfile\n");
-    }
-
-    private void createUserProfileHasTicket() throws SQLException {
-        System.out.println("\nAdd new user-ticket link...");
-        UserProfileHasTicket userProfileHasTicket = getUserProfileTicketValues();
-        userProfileHasTicketController.create(userProfileHasTicket);
-        System.out.println("added user with ticket\n");
-    }
-
     private void updateAirport() throws SQLException {
         System.out.println("\nEnter id of airport to update: ");
         Integer id = scanner.nextInt();
         Airport airport = getAirportValues();
         airport.setId(id);
-
-        airportController.update(airport.getId(), airport);
+        System.out.println(airport);
+        airportController.update(airport);
         System.out.println("Updated \n");
     }
 
@@ -238,9 +181,9 @@ public class View {
         System.out.println("\nEnter id of flight to update: ");
         Integer id = scanner.nextInt();
         Flight flight = getFlightValues();
-
-
-        flightController.update(id, flight);
+        flight.setId(id);
+        System.out.println(flight);
+        flightController.update(flight);
         System.out.println("Updated \n");
     }
 
@@ -250,29 +193,10 @@ public class View {
         Ticket ticket = getTicketValues();
         ticket.setId(id);
 
-        ticketController.update(ticket.getId(), ticket);
+        ticketController.update(ticket);
         System.out.println("Updated \n");
     }
 
-    private void updateUserProfile() throws SQLException {
-        System.out.println("\nEnter id of user to update: ");
-        Integer id = scanner.nextInt();
-        UserProfile userProfile = getUserProfileValues();
-        userProfile.setId(id);
-
-        userProfileController.update(userProfile.getId(), userProfile);
-        System.out.println("Updated \n");
-    }
-
-    private void updateUserProfileHasTicket() throws SQLException {
-        System.out.println("\nEnter id of user with ticket to update: ");
-        Integer id = scanner.nextInt();
-        UserProfileHasTicket userProfileHasTicket = getUserProfileTicketValues();
-        userProfileHasTicket.setId(id);
-
-        userProfileHasTicketController.update(userProfileHasTicket.getId(), userProfileHasTicket);
-        System.out.println("Updated \n");
-    }
 
     private void updateAirline() throws SQLException {
         System.out.println("\nEnter id of airline to update: ");
@@ -280,7 +204,7 @@ public class View {
         Airline airline = getAirlineValues();
         airline.setId(id);
 
-        airlineController.update(airline.getId(), airline);
+        airlineController.update(airline);
         System.out.println("Updated \n");
     }
 
@@ -316,21 +240,6 @@ public class View {
         System.out.println("Deleted \n");
     }
 
-    private void deleteUserProfile() throws SQLException {
-        System.out.println("\nEnter ID of user to delete him: ");
-        int id = scanner.nextInt();
-
-        userProfileController.delete(id);
-        System.out.println("Deleted \n");
-    }
-
-    private void deleteUserProfileHasTicket() throws SQLException {
-        System.out.println("\nEnter ID of user to delete his link with ticket: ");
-        int id = scanner.nextInt();
-
-        userProfileHasTicketController.delete(id);
-        System.out.println("Deleted \n");
-    }
 
     public final void view() {
         System.out.println("\nInput method key to deal with db:");

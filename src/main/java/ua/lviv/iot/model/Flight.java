@@ -1,7 +1,8 @@
 package ua.lviv.iot.model;
 
-import java.util.Date;
+import javax.persistence.*;
 
+@Entity
 public class Flight {
 
     private Integer id;
@@ -27,6 +28,13 @@ public class Flight {
         this(null, airlineId, departureAirportId, arrivalAirportId, allowedBaggageInKilograms, airplaneName);
     }
 
+    public Flight() {
+
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     public Integer getId() {
         return id;
     }
@@ -35,6 +43,8 @@ public class Flight {
         this.id = id;
     }
 
+    @Basic
+    @Column(name = "airline_id")
     public Integer getAirlineId() {
         return airlineId;
     }
@@ -43,6 +53,8 @@ public class Flight {
         this.airlineId = airlineId;
     }
 
+    @Basic
+    @Column(name = "departure_airport_id")
     public Integer getDepartureAirportId() {
         return departureAirportId;
     }
@@ -51,6 +63,8 @@ public class Flight {
         this.departureAirportId = departureAirportId;
     }
 
+    @Basic
+    @Column(name = "arrival_airport_id")
     public Integer getArrivalAirportId() {
         return arrivalAirportId;
     }
@@ -59,14 +73,8 @@ public class Flight {
         this.arrivalAirportId = arrivalAirportId;
     }
 
-    public Integer getAllowedBaggageInKilograms() {
-        return allowedBaggageInKilograms;
-    }
-
-    public void setAllowedBaggageInKilograms(Integer allowedBaggageInKilograms) {
-        this.allowedBaggageInKilograms = allowedBaggageInKilograms;
-    }
-
+    @Basic
+    @Column(name = "airplane_name")
     public String getAirplaneName() {
         return airplaneName;
     }
@@ -75,6 +83,15 @@ public class Flight {
         this.airplaneName = airplaneName;
     }
 
+    @Basic
+    @Column(name = "allowed_baggage_in_kilogrms")
+    public Integer getAllowedBaggageInKilograms() {
+        return allowedBaggageInKilograms;
+    }
+
+    public void setAllowedBaggageInKilograms(Integer allowedBaggageInKilograms) {
+        this.allowedBaggageInKilograms = allowedBaggageInKilograms;
+    }
 
     @Override
     public String toString() {
@@ -85,5 +102,37 @@ public class Flight {
                 ", arrivalAirportId:" + arrivalAirportId +
                 ", allowedBaggageInKilograms:" + allowedBaggageInKilograms +
                 ", airplaneName:" + airplaneName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Flight flight = (Flight) o;
+
+        if (id != null ? !id.equals(flight.id) : flight.id != null) return false;
+        if (airlineId != null ? !airlineId.equals(flight.airlineId) : flight.airlineId != null) return false;
+        if (departureAirportId != null ? !departureAirportId.equals(flight.departureAirportId) : flight.departureAirportId != null)
+            return false;
+        if (arrivalAirportId != null ? !arrivalAirportId.equals(flight.arrivalAirportId) : flight.arrivalAirportId != null)
+            return false;
+        if (airplaneName != null ? !airplaneName.equals(flight.airplaneName) : flight.airplaneName != null)
+            return false;
+        if (allowedBaggageInKilograms != null ? !allowedBaggageInKilograms.equals(flight.allowedBaggageInKilograms) : flight.allowedBaggageInKilograms != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (airplaneName != null ? airplaneName.hashCode() : 0);
+        result = 31 * result + (allowedBaggageInKilograms != null ? allowedBaggageInKilograms.hashCode() : 0);
+        result = 31 * result + (departureAirportId != null ? departureAirportId.hashCode() : 0);
+        result = 31 * result + (arrivalAirportId != null ? arrivalAirportId.hashCode() : 0);
+        result = 31 * result + (airlineId != null ? airlineId.hashCode() : 0);
+        return result;
     }
 }

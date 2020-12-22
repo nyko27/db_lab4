@@ -26,8 +26,8 @@ public class AirportController implements GeneralController<Airport> {
     }
 
     @Override
-    public void update(Integer id, Airport airport) throws SQLException {
-        airportDAO.update(id, airport);
+    public void update(Airport airport) throws SQLException {
+        airportDAO.update(airport);
     }
 
     @Override

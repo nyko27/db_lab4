@@ -1,45 +1,26 @@
 package ua.lviv.iot.dao;
 
-import ua.lviv.iot.connection.DbConnector;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import ua.lviv.iot.connection.HibernateJPA;
 import ua.lviv.iot.model.Flight;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public  class FlightDAO implements GeneralDAO<Flight> {
-
-    private static final String SELECT_ALL = "SELECT * FROM sky_scanner.flight";
-    private static final String SELECT_ONE = "SELECT * FROM sky_scanner.flight WHERE id=?";
-    private static final String CREATE = "INSERT sky_scanner.flight"
-            + "(airline_id, departure_airport_id, arrival_airport_id, allowed_baggage_in_kilogrms, airplane_name)" +
-            "VALUES (?,?,?,?,?)";
-    private static final String UPDATE = "UPDATE sky_scanner.flight"
-            + " SET airplane_name=?, allowed_baggage_in_kilogrms=?, departure_airport_id=?, arrival_airport_id=?,  " +
-            "airline_id=? WHERE id=?";
-    private static final String DELETE = "DELETE FROM sky_scanner.flight WHERE id=?";
+public class FlightDAO implements GeneralDAO<Flight> {
 
 
     @Override
     public List<Flight> findAll() throws SQLException {
-        List<Flight> flights = new ArrayList<Flight>();
-        try (PreparedStatement ps = DbConnector.getConnection().prepareStatement(SELECT_ALL)) {
-            System.out.println(ps);
-            ResultSet resultSet = ps.executeQuery();
-            while (resultSet.next()) {
-                Flight flight = new Flight(
-                        resultSet.getInt("id"),
-                        resultSet.getInt("airline_id"),
-                        resultSet.getInt("departure_airport_id"),
-                        resultSet.getInt("arrival_airport_id"),
-                        resultSet.getInt("allowed_baggage_in_kilogrms"),
-                        resultSet.getString("airplane_name"));
-                flights.add(flight);
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        List<Flight> flights = new LinkedList<>();
+        try (Session session = HibernateJPA.getSession()) {
+            session.beginTransaction();
+            flights = session.createQuery("from Flight").getResultList();
+            session.getTransaction().commit();
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
         return flights;
     }
@@ -48,19 +29,12 @@ public  class FlightDAO implements GeneralDAO<Flight> {
     @Override
     public Flight findById(Integer id) throws SQLException {
         Flight flight = null;
-        try (PreparedStatement ps = DbConnector.getConnection().prepareStatement(SELECT_ONE)) {
-            ps.setInt(1, id);
-            ResultSet resultSet = ps.executeQuery();
-            while (resultSet.next()) {
-                flight = new Flight(resultSet.getInt("id"),
-                        resultSet.getInt("airline_id"),
-                        resultSet.getInt("departure_airport_id"),
-                        resultSet.getInt("arrival_airport_id"),
-                        resultSet.getInt("allowed_baggage_in_kilogrms"),
-                        resultSet.getString("airplane_name"));
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        try (Session session = HibernateJPA.getSession()) {
+            session.beginTransaction();
+            flight = session.get(Flight.class, id);
+            session.getTransaction().commit();
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
         return flight;
     }
@@ -68,50 +42,40 @@ public  class FlightDAO implements GeneralDAO<Flight> {
     @Override
     public void create(Flight flight) throws SQLException {
 
-        try (PreparedStatement ps = DbConnector.getConnection().prepareStatement(CREATE)) {
-            ps.setInt(1, flight.getAirlineId());
-            ps.setInt(2, flight.getDepartureAirportId());
-            ps.setInt(3, flight.getArrivalAirportId());
-            ps.setInt(4, flight.getAllowedBaggageInKilograms());
-            ps.setString(5, flight.getAirplaneName());
-            ps.executeUpdate();
-            System.out.println(ps);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        try (Session session = HibernateJPA.getSession()) {
+            session.beginTransaction();
+            session.save(flight);
+            session.getTransaction().commit();
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
+
     }
 
 
     @Override
-    public void update(Integer id, Flight newFlight) throws SQLException {
-        try (PreparedStatement ps = DbConnector.getConnection().prepareStatement("UPDATE sky_scanner.flight"
-                + " SET airplane_name=?, allowed_baggage_in_kilogrms=?, departure_airport_id=?, arrival_airport_id=?,  " +
-                "airline_id=? WHERE id=?")) {
-            ps.setInt(6, id);
-            ps.setString(1, newFlight.getAirplaneName());
-            ps.setInt(2, newFlight.getAllowedBaggageInKilograms());
-            ps.setInt(3, newFlight.getDepartureAirportId());
-            ps.setInt(4, newFlight.getArrivalAirportId());
-            ps.setInt(5, newFlight.getAirlineId());
-
-            ps.executeUpdate();
-            System.out.println(ps);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
+    public void update( Flight newFlight) throws SQLException {
+        try (Session session = HibernateJPA.getSession()) {
+            session.beginTransaction();
+            session.update(newFlight);
+            session.getTransaction().commit();
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override
     public void delete(Integer id) throws SQLException {
-        try (PreparedStatement ps = DbConnector.getConnection().prepareStatement(DELETE)) {
-            ps.setInt(1, id);
-            System.out.println(ps);
-            ps.executeUpdate();
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        try (Session session = HibernateJPA.getSession()) {
+            session.beginTransaction();
+            Flight flightToDelete = session.get(Flight.class, id);
+            if (flightToDelete != null){
+                session.delete(flightToDelete);
+            }
+            session.getTransaction().commit();
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
 
     }
